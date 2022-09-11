@@ -1,0 +1,40 @@
+name: Compile TeX files to pdf
+on: push
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+        
+      - name: Collect all tex file
+        run: |
+          GLOBIGNORE="Output/*"
+          shopt -s globstar
+          mkdir -p tex
+          for file in **/*.tex
+          do
+            scp -r $file tex
+          done
+        
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: "tex/*.tex"
+          glob_root_file: true
+          latexmk_use_xelatex: true
+          extra_fonts: Fonts/*
+          
+      - name: Create directory for pdf files
+        run: |
+          mkdir -p pdf
+          rm pdf/*.pdf
+          scp -r *.pdf pdf
+          
+      - name: Commit and Push file
+        run: |
+          git config user.name "cosmsstar"
+          git config user.email "cosmsstar@gmail.com"
+          git add pdf
+          git commit -m "Actions: add pdf file"
+          git push
