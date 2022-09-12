@@ -1,0 +1,126 @@
+\section{Check Your Proof by Example}\label{sec:cyp}
+Besides functional programming,
+the course also dealt with the verification of functional programs.
+Even though we only consider a strict and total subset
+of Haskell for our proofs,
+equational reasoning together with induction
+(and case analysis)
+is already sufficient to prove interesting properties.
+Since ``fast and loose reasoning is morally correct''~\cite{fast_and_loose},
+valid properties in this sub-language carry over to Haskell.
+Simple inductive proofs lend themselves well to be automatically checked and, as announced in~\cite{next_1100}, a tool called ``Check Your Proof'' (CYP for short) was developed at our lab by Durner and Noschinski\footnote{\url{https://github.com/noschinl/cyp}}.
+
+The first example of such a proof presented in the lecture is the proof of associativity of the append-operator for lists.
+Proving this example in CYP first requires us
+to define the data type of lists.
+% We use
+% the constructors \lstinline[style=cyp]![]! and \lstinline[style=cyp]!:!
+% as is standard in Haskell.
+\begin{lstlisting}[style=cyp]
+  data List a = [] | a : List a
+\end{lstlisting}
+Now we can define the infix append-operator \lstinline[style=cyp]!++!
+\begin{lstlisting}[style=cyp]
+  [] ++ ys = ys
+  (x : xs) ++ ys = x : (xs ++ ys)
+\end{lstlisting}
+and state the goal
+\begin{lstlisting}[style=cyp]
+  goal xs ++ (ys ++ zs) .=. (xs ++ ys) ++ zs
+\end{lstlisting}
+where all variables are implicitly universally quantified.
+The listings above describe the background theory of the proof.
+The theory is fixed in a file and provided
+to the students.
+The students then supply the proof in a separate file.
+In our case, we proceed to prove the statement by structural induction on \lstinline[style=cyp]!xs!.
+\begin{lstlisting}[style=cyp]
+  Lemma: xs ++ (ys ++ zs) .=. (xs ++ ys) ++ zs
+  Proof by induction on List xs
+    Case []
+      To show: [] ++ (ys ++ zs) .=. ([] ++ ys) ++ zs
+      Proof
+                        [] ++ (ys ++ zs)
+        (by def ++) .=. ys ++ zs
+        (by def ++) .=. ([] ++ ys) ++ zs
+      QED
+\end{lstlisting}
+
+In above listing, the first \lstinline[style=cyp]!Proof! marks the beginning of an inductive proof whereas the second \lstinline[style=cyp]!Proof!, which has no further arguments, starts an equational proof.
+While CYP allows to arbitrarily nest proofs
+by case analysis or induction,
+the innermost goal must always be discharged by an equational proof.
+An equational proof is a chain of equations that rewrite the left-hand side of the current goal to the right-hand side.
+The user has to justify each step by a corresponding equation that yields the right-hand side
+when applied to the term or a subterm on the left-hand side.
+Note that in the example, \lstinline[style=cyp]!(by def ++)! refers to either one of the defining equations of \lstinline[style=cyp]!++!
+and CYP will check if any of them justifies the current step.
+
+Now, consider the inductive case.
+\begin{lstlisting}[style=cyp]
+    Case x : xs
+      To show: (x : xs) ++ (ys ++ zs) .=. ((x : xs) ++ ys) ++ zs
+      IH: xs ++ (ys ++ zs) .=. (xs ++ ys) ++ zs
+      Proof
+                          (x : xs) ++ (ys ++ zs)
+        (by def ++)   .=. x : (xs ++ (ys ++ zs))
+        (by IH)       .=. x : ((xs ++ ys) ++ zs)
+
+                          ((x : xs) ++ ys) ++ zs
+        (by def ++)   .=. (x : (xs ++ ys)) ++ zs
+        (by def ++)   .=. x : ((xs ++ ys) ++ zs)
+      QED
+  QED
+\end{lstlisting}
+Again, CYP requires the user to be explicit: the goal in each inductive case and the induction hypotheses have to be spelled out.
+Note that CYP also allows one to start rewriting from the left-hand side as well as the right-hand side of the goal.
+
+The lecture goes beyond proofs by structural induction and introduces proofs by extensionality, case analysis, and computation induction,
+all of which CYP supports with some conditions applying as we will describe shortly.
+Computation induction was not supported in the original version by Durner and Noschinski but was only introduced in a fork by us in WS20\footnote{\url{https://github.com/lukasstevens/cyp}}.
+CYP also allows proving named auxiliary lemmas,
+which is useful to modularise proofs
+and often necessary to prove generalisations of a given goal.
+
+The simplicity of CYP both in its usage and its implementation comes with some caveats:
+\begin{itemize}
+    \item The version of CYP used by us is untyped and thus unsound if the background theory contains multiple types as demonstrated in~\cite{cyp_holes}: given a singleton type \lstinline[style=cyp]!data U = U! in the background theory,
+      one can prove \lstinline[style=cyp]!x .=. y! by case analysis.
+        In an untyped environment, one can then use this lemma to prove equality between any two terms.
+    \item Barring soundness issues due to a lack of types, one also needs to ensure that all function definitions are total and that their patterns do not overlap.
+    \item Computation induction is unsound if there are recursive calls in branches of an if-then-else expression.
+      This is because the induction hypotheses would have to be conditional rewrite rules in such cases, which CYP does not support.
+\end{itemize}
+
+Renz et al.~\cite{cyp_holes} discuss the inner workings of CYP in detail and develop an extension that introduces types,
+thus solving the first issue.
+They also made it possible to leave holes in proofs and in expressions, which then have to be filled in by students.
+Solving the other issues, however, would incur additional effort.
+We think that CYP should be put on a stronger foundation,
+such as higher-order logic (HOL),
+without compromising its simplicity from a user perspective.
+One possibility would be to rewrite CYP as a frontend to Isabelle/HOL~\cite{isabelle}.
+Since HOL is a typed logic, it would solve the first issue.
+The latter issues could be resolved using Isabelle's function package~\cite{isabelle_functions}.
+A stronger foundation would also allow one to develop new extensions for CYP more confidently.
+
+Our teaching experience with CYP has been very positive.
+CYP proof checking is quick and can easily be integrated in the testing framework (Tasty) that we used for our programming exercises.
+This allowed us to deal with programming and proof exercises in a uniform and scalable way.
+CYP was also generally liked by our students:
+% as their feedback testifies:
+In WS19,
+we received two positive comments and one negative comment without asking for feedback on CYP.
+When asked explicitly about their thoughts on CYP in WS20,
+the students answered with 18 positive comments and three negative comments.
+The students liked the instantaneous feedback that CYP provides,
+which helped them to deepen their understanding of inductive proofs at their own pace.
+The main criticism of CYP was the lack of documentation.
+A CYP-cheatsheet was later added to the repository of CYP to improve the situation.
+
+In our exams, two exercises (out of $\approx 8$) were concerned with inductive proofs.
+The first exercise was a straightforward proof by structural induction while the second one required more effort, e.g.\ a generalisation of the goal or a slightly less trivial computation induction.
+We did not require the students to stick to CYP's syntax in the exam, but we urged them to follow a similar structure,
+which worked very well overall and simplified the grading.
+However, we have no data on whether CYP also improves students' understanding of induction.
+

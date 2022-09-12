@@ -1,0 +1,851 @@
+% \documentclass{beamer}
+\documentclass[aspectratio=169]{beamer}
+\usepackage{appendixnumberbeamer}
+
+\mode<presentation>{\usetheme[subsectionpage=progressbar,block=fill,numbering=none]{metropolis}}
+
+\usepackage[sfdefault]{FiraSans} %% option 'sfdefault' activates Fira Sans as the default text font
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{graphicx} % Allows including images
+\usepackage[export]{adjustbox}
+\usepackage{pgfplots}
+\usepackage{caption}
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{multicol}
+
+% Math packages
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{mathpartir}
+\usepackage{stmaryrd}
+\usepackage{centernot}
+\usepackage[normalem]{ulem}
+\usepackage[absolute,overlay]{textpos}
+
+% Coloured boxes
+\usepackage{tcolorbox}
+\colorlet{alert}{mLightBrown}
+\colorlet{mLightBrownTransparent}{white!70!mLightBrown}
+\newtcolorbox{alertbox}
+{standard jigsaw, opacityback=0,colframe=alert}
+\newtcolorbox{tbox}
+{standard jigsaw, opacityback=0,opacityframe=0}
+
+%% Coding
+\usepackage[outputdir=build]{minted}
+\setminted{highlightcolor=mLightBrown!70}
+\usepackage{listings}
+\lstdefinelanguage{cyp}{
+  keywords={Lemma,goal,Proof,QED,To,show,Case,IH},
+  keywordstyle=\color{blue}\bfseries,
+  keywords=[2]{data},
+  keywordstyle=[2]{\color{purple}\bfseries},
+  keywords=[3]{.=.},
+  keywordstyle=[3]{\color{red}\bfseries},
+  comment=[l]{--},
+  commentstyle=\color{purple}\ttfamily,
+}
+
+\lstset{
+  language=cyp,
+  extendedchars=true,
+  basicstyle=\ttfamily,
+  showstringspaces=false,
+  showspaces=false,
+  tabsize=2,
+  breaklines=true,
+  showtabs=false
+}
+
+% \newcommand{\haskell}[1]{\mintinline{haskell}{#1}}
+\newcommand{\backgroundimage}{
+% \adjincludegraphics[height=\paperheight,trim={{.15\width} 0 {.15\width} 0},clip]{assets/krakowbridge}
+\adjincludegraphics[height=\paperheight]{assets/krakowbridge}
+}
+
+\title{Engaging, Large-Scale Functional Programming Education in Physical and Virtual Space} % the title on the title page
+
+\author{\underline{Kevin Kappelmann}, Jonas Rädle, \underline{Lukas Stevens}} % Your name
+\institute[TU Munich]{Technical University of Munich}
+\date{July 28, 2022} % Date, can be changed to a custom date
+
+\begin{document}
+
+{\usebackgroundtemplate{\backgroundimage}
+\begin{frame}[plain]
+\titlepage
+
+\tikz[remember picture, overlay]
+{\node[anchor=south east, outer sep=0.5cm] at (current page.south east)
+{\includegraphics[width=0.2\textwidth]{assets/lambdadays}};}
+\end{frame}
+}
+
+%------------------------------------------------
+\section{Challenges}
+% Soaring Enrolments
+\begin{frame}{Soaring Enrolments}
+\only<1>{\centerline{\Large{\alert{1. Number of Computer Science students exploded}}}}
+\only<2-3>{\centerline{Example: Computer Science at TU Munich}
+
+\pause
+\begin{multicols}{2}
+\begin{figure}
+\centering
+\captionsetup{justification=centering}
+% somehow this needs to be 1.02 when it is 1 below
+\resizebox{0.75\linewidth}{!}{
+\begin{tikzpicture}
+\begin{axis}[
+    ymin=0,
+    x tick label style={/pgf/number format/.cd,%
+      set thousands separator={}}
+  ]
+  \addplot +[color=red, mark options={fill=red}] coordinates {
+    (2013, 3555)
+    (2014, 3815)
+    (2015, 4240)
+    (2016, 4744)
+    (2017, 5399)
+    (2018, 5986)
+    (2019, 6458)
+    (2020, 7444)
+    (2021, 8253)
+  };
+\end{axis}
+\end{tikzpicture}
+}
+\caption*{Number of CS students\\(132\% increase)}
+\end{figure}
+
+\columnbreak
+
+\begin{figure}
+\centering
+\captionsetup{justification=centering}
+\resizebox{0.75\linewidth}{!}{
+\begin{tikzpicture}
+\begin{axis}[
+    ymin=0,
+    x tick label style={/pgf/number format/.cd,%
+      set thousands separator={}}
+  ]
+  \addplot coordinates {
+    (2013, 439)
+    (2014, 449)
+    (2015, 432)
+    (2016, 436)
+    (2017, 438)
+    (2018, 450)
+    (2019, 500)
+    (2020, 529)
+    (2021, 573)
+  };
+\end{axis}
+\end{tikzpicture}
+}
+\caption*{Number of CS academic staff\\(31\% increase)}
+\end{figure}
+\end{multicols}
+}
+\only<1-3>{
+\visible<3>{\centerline{\Large{\alert{1000+ students per course are the new normal}}}}
+}
+% \only<4>{
+% Faced by
+% \begin{itemize}
+  % \item 2019: 13 student assistants
+  % \item 2020: 22 student assistants
+% \end{itemize}
+% }
+\end{frame}
+
+\begin{frame}{The Pandemic}
+\only<1>{\centerline{\Large{\alert{2. Radical transition to online classes}}}}
+\only<2>{\centerline{How can we go from here\dots}
+\begin{figure}
+\includegraphics[height=0.80\textheight]{assets/class}
+\end{figure}
+}
+\only<3>{\centerline{to here\dots}
+\begin{figure}
+\includegraphics[height=0.80\textheight]{assets/zoom}
+\end{figure}
+}
+\only<4>{\centerline{without ending up here?}
+\begin{figure}
+\includegraphics[height=0.80\textheight]{assets/zoom_fatigue}
+\end{figure}
+}
+\end{frame}
+
+\begin{frame}{Usefulness of Functional Programming}
+\only<1>{
+\centering\Large{\alert{3. Students question the usefulness of functional languages beyond academia}}}
+\only<2>{
+\begin{multicols}{2}
+
+\begin{figure}
+\includegraphics[height=0.80\textheight]{assets/xkcd_haskell}
+\caption*{\url{xkcd.com/1312}}
+\end{figure}
+
+\columnbreak
+
+\begin{figure}
+\includegraphics[height=0.80\textheight]{assets/xkcd_tailrec}
+\caption*{\url{xkcd.com/1270}}
+\end{figure}
+\end{multicols}
+}
+\end{frame}
+
+\begin{frame}
+\centerline{\alert{\huge{There is hope!}}}
+\begin{itemize}[<+->]
+\item We managed to cope with all these challenges
+\item We share our insights, tools, and exercises for other educators
+\end{itemize}
+
+\visible<2->{
+  You can find our resources on:\\
+  \centerline{\small\url{github.com/kappelmann/engaging-large-scale-functional-programming}}
+}
+
+\vspace{\baselineskip}
+\visible<3->{
+Note: We used Haskell, but most ideas apply to any functional programming course
+}
+\end{frame}
+
+%------------------------------------------------
+% \section{Course Structure and Conditions}
+% \begin{frame}{Hard Facts}
+% \begin{itemize}[<+->]
+  % \item Typical functional programming introductory course\\
+    % Special: Formal proofs and proof checker
+  % % \item 5 ECTS course (${\sim}150$ hours of work)
+  % \item 14 weeks; each week: one 90-minute lecture, one 90-minute tutorial, and one homework sheet
+  % % \item Students took courses on Java, algorithms and data structures, discrete mathematics, and linear algebra.
+   % \item Winter semester 2019: 1057 students and 13 student assistants\\
+     % Winter semester 2020 (online): 1031 students and 22 student assistants
+% \end{itemize}
+% \end{frame}
+
+% \begin{frame}{Syllabus Excerpt}
+% We used Haskell, but most ideas apply to other functional languages.
+% \pause
+% \begin{itemize}[<+->]
+  % \item Basic FP concepts: recursion and pattern matching (numbers and lists), polymorphism
+  % \item Formal proofs by structural and computation induction
+  % \item More FP concepts: higher-order functions, type classes, algebraic datatypes
+  % \item Specifics: modules, IO, lazy evaluation, tail recursion
+% \end{itemize}
+% \end{frame}
+
+%------------------------------------------------
+% \section{Lectures}
+% \begin{frame}{Time Is Short}
+  % \centerline{\alert{\Large{See our paper ;)}}}
+% \end{frame}
+
+
+%------------------------------------------------
+\section{Practical Part}
+\subsection{Engagement Mechanisms}
+% \begin{frame}{Grade Bonus}
+% \centerline{\Large{\alert{Incentives do work!}}}
+% \pause
+% \begin{itemize}[<+->]
+% \item Bonus on final exam if certain goals are achieved
+% \item Multiple ways to obtain points: homework exercises, participation in workshops, programming contests,\dots
+% % \item Was once abolished\dots\\
+% % \item[] Result: number of homework submissions severely decreased
+% \end{itemize}
+% \end{frame}
+
+\begin{frame}[fragile]{Instant Feedback}
+\only<1-6>{
+\centerline{\Large{\alert{Feedback must come fast!}}}
+\pause
+\begin{itemize}[<+->]
+% \item Asynchronous Q\&A forum
+\item Automated testing and feedback
+\begin{itemize}
+  \item \emph{ArTEMiS} runs tests, manages scores, offers exam mode,\dots
+  \item \emph{Tasty} combines \only<4>{\underline}{QuickCheck}, SmallCheck, and HUnit tests
+  \item \emph{HLint} for stylistic feedback
+  \item \emph{Check Your Proof} for automated proof checking
+\end{itemize}
+% \pause
+% \item Manual reviews turned out to be inefficient\dots
+% \begin{itemize}
+  % \item \emph{HLint} offers feedback more directly
+  % \item Student assistants create engaging exercises instead
+% \end{itemize}
+\end{itemize}
+}
+
+\begin{onlyenv}<7>
+\begin{lstlisting}
+Lemma: xs ++ (ys ++ zs) .=. (xs ++ ys) ++ zs
+Proof by induction on List xs
+Case []
+  To show: [] ++ (ys ++ zs) .=. ([] ++ ys) ++ zs
+  Proof
+                    [] ++ (ys ++ zs)
+    (by def ++) .=. ys ++ zs
+    (by def ++) .=. ([] ++ ys) ++ zs
+  QED
+Case x : xs
+  To show: (x : xs) ++ (ys ++ zs) .=. ((x : xs) ++ ys) ++ zs
+  IH: xs ++ (ys ++ zs) .=. (xs ++ ys) ++ zs
+  Proof
+  ...
+\end{lstlisting}
+\end{onlyenv}
+
+\end{frame}
+
+\begin{frame}{Workshops With Industry Partners}
+\vspace{\baselineskip}
+
+\centerline{\Large{\alert{Functional programming is practical!}}}
+\pause
+\begin{itemize}
+\item In 2020, we hosted 3 workshops with industry partners
+\begin{enumerate}[<3->]
+  \item Design patterns for functional programs
+  \item Networking and advanced IO
+  \item User interfaces and functional reactive programming
+\end{enumerate}
+\item<4-> Great success: 120 registrations for 105 spots
+\item<5-> In some cases, workshop extended for multiple hours
+\end{itemize}
+\visible<6->{
+\begin{alertbox}
+\centerline{Maybe you want to offer a workshop as well? :)}
+\end{alertbox}
+}
+\end{frame}
+% \begin{frame}{Workshops With Industry Partners}
+% \vspace{\baselineskip}
+
+% \centerline{\Large{\alert{Functional programming is practical!}}}
+% \pause
+% \begin{itemize}
+% \visible<2->{
+% \item In 2020, we hosted three workshops}
+% % \begin{enumerate}
+  % % \item Design patterns for functional programs
+  % % \item Networking and advanced IO
+  % % \item User interfaces and functional reactive programming
+% % \end{enumerate}
+% \only<6->{
+% \visible<6->{
+% \item Great success: 120 registrations for 105 spots}
+% \visible<7->{
+% \item In some cases, workshop extended for multiple hours}
+% \visible<8->{
+% \item Little organisational work}}
+% \end{itemize}
+% \only<1-5>{\vspace{-\baselineskip}}
+% \only<1-3>{
+% \visible<3>{
+% \centering
+% \includegraphics[width=0.9\linewidth]{assets/workshop_slide_active_group.pdf}}}
+% \only<4>{
+% \centering
+% \includegraphics[width=0.9\linewidth]{assets/workshop_slide_networking.pdf}}
+% \only<5>{
+% \centering
+% \includegraphics[width=0.9\linewidth]{assets/workshop_slide_ui.pdf}}
+% \end{frame}
+
+% \begin{frame}{Social Interactions}
+% \centerline{\Large{\alert{The social environment matters!}}}
+% \pause
+% \begin{itemize}[<+->]
+% % \item Truism: students spend more time on courses they like
+% \item Online courses are isolating\dots
+% \item[] so let us foster social interaction:
+% \begin{itemize}[<4->]
+  % \item Pair-programming in tutorials
+  % \item ACM-ICPC-like programming contest
+  % \item Get-together hangout sessions
+  % \item Award ceremonies
+% \end{itemize}
+% \end{itemize}
+% \end{frame}
+
+\begin{frame}[fragile]{Diverse Challenges}
+\centerline{\Large{\alert{Offer diverse challenges!}}}
+\pause
+\begin{itemize}[<+->]
+\item Weekly competition exercises
+\end{itemize}
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}[fragile]{Diverse Challenges}
+
+\only<1>{
+  % \centerline{Strategy}
+\begin{figure}
+\includegraphics[height=0.9\textheight]{assets/strategy}
+\end{figure}
+}
+
+\only<2>{
+  % \centerline{Creativity}
+\begin{figure}
+% \includegraphics[height=0.85\textheight]{assets/creativity}
+\includegraphics[height=0.9\textheight]{assets/contest}
+\end{figure}
+}
+\only<3>{
+\begin{columns}[t]
+\begin{column}{0.35\textwidth}
+  % \centerline{Creativity}
+\begin{figure}
+% \includegraphics[height=0.85\textheight]{assets/creativity}
+% \includegraphics[width=\textwidth]{assets/creativity}
+  \begin{tikzpicture}[scale=0.65]
+  \begin{axis}[
+    minor tick num=1,
+    samples=120,
+    axis y line=left,
+    axis x line=middle
+    ]
+    \addplot+[domain=0:10, mark=none, teal]
+      coordinates {(0,0) (2, 1)};
+    \addplot+[domain=0:10, mark=none, blue]
+      coordinates {(2,1) (3, 0.5)};
+    \addplot+[domain=0:10, mark=none, purple]
+      coordinates {(3, 0.5) (7.5, 0.5)};
+    \addplot+[domain=0:10, mark=none, orange]
+      coordinates {(7.5, 0.5) (10, 0)};
+    \addplot[densely dashed] coordinates {(2,0) (2,1)};
+    \addplot[densely dashed] coordinates {(3,0) (3,0.5)};
+    \addplot[densely dashed] coordinates {(7.5,0) (7.5,0.6)};
+    \addplot[densely dashed] coordinates {(10,0) (10,0.6)};
+    \addplot[->] coordinates {(0,0.9) (2,0.9)} node[midway, above, teal] {attack};
+    \addplot[->] coordinates {(2,0.4) (3,0.4)} node[midway, below, blue] {decay};
+    \addplot[->] coordinates {(6,0) (6,0.5)} node[midway,left, purple] {sustain};
+    \addplot[<-] coordinates {(7.5,0.6) (10,0.6)} node[midway, below, orange] {release};
+    \addplot[->] coordinates {(0,0.1) (10,0.1)} node[midway, above, olive] {duration};
+  \end{axis}
+  \end{tikzpicture}
+
+\end{figure}
+\end{column}
+\begin{column}{0.65\textwidth}
+% }
+% \only<4>{
+  % \centerline{Creativity}
+\begin{figure}
+\includegraphics[width=\textwidth]{assets/creativity2}
+\end{figure}
+\end{column}
+\end{columns}
+}
+\end{frame}
+
+\begin{frame}[fragile]{Diverse Challenges}
+\centerline{\Large{\alert{Offer diverse challenges!}}}
+\begin{itemize}
+\item Weekly competition exercises
+% \begin{itemize}[<3->]
+  % \item Code-golfing
+  % \item Optimisations (SAT and resolution provers, mathematical computations,\dots)
+  % \item Games strategies and tournaments
+  % \item Creative tasks: art and music generation
+% \end{itemize}
+% \item Accompanied by humorously written blog posts
+\item Works extremely well to motivate talented students.
+\item<2-> Awards for top 30 students
+% \item[]<3-> \emph{but it is very time-consuming}.
+\end{itemize}
+% \begin{onlyenv}<2>
+% \begin{minted}[fontsize=\small]{haskell}
+% bernoulli = genericIndex $ map head $ iterate
+  % ((*) `zipWith` enumFrom 1 <<< zipWith subtract =<< tail)
+  % recip `map` enumFrom 1
+% \end{minted}
+% \end{onlyenv}
+\visible<3->{
+\begin{alertbox}
+\centerline{Maybe you want to offer awards or challenges as well? :)}
+\end{alertbox}
+}
+\end{frame}
+
+
+%------------------------------------------------
+\section{I/O Mocking}
+
+\begin{frame}{Motivation}
+
+\begin{itemize}[<+->]
+  \item Submissions (primarily) tested with QuickCheck
+  \item I/O is an important part of the syllabus
+\end{itemize}
+\vfill
+\visible<3->{
+\begin{center}
+\Large \alert{So how do we test I/O in Haskell?}
+}
+\end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]{The Standard Way}
+\begin{visibleenv}<3->
+\begin{minted}[fontsize=\small]{haskell}
+import qualified Prelude
+import Prelude hiding (readFile, writeFile)
+
+class Monad m => MonadFileSystem m where
+  readFile :: FilePath -> m String
+  writeFile :: FilePath -> String -> m ()
+\end{minted}
+\end{visibleenv}
+
+\vspace{1.5em}
+
+\begin{onlyenv}<1>
+\begin{minted}[fontsize=\small]{haskell}
+copyFile :: FilePath -> FilePath -> IO ()
+copyFile = _
+\end{minted}
+\end{onlyenv}
+
+\begin{onlyenv}<2-3>
+\begin{minted}[fontsize=\small]{haskell}
+copyFile :: MonadFileSystem m =>
+            FilePath -> FilePath -> m ()
+copyFile = _
+\end{minted}
+\end{onlyenv}
+
+\begin{visibleenv}<4->
+\begin{minted}[fontsize=\small]{haskell}
+copyFile :: MonadFileSystem m =>
+            FilePath -> FilePath -> m ()
+copyFile source target = do
+  content <- readFile source
+  writeFile target content
+\end{minted}
+\end{visibleenv}
+\end{frame}
+
+\begin{frame}[fragile]{Multiple Instantiations}
+\begin{minted}[fontsize=\small]{haskell}
+instance MonadFileSystem IO where
+  readFile = Prelude.readFile
+  writeFile = Prelude.readFile
+\end{minted}
+\begin{visibleenv}<2>
+\begin{minted}[fontsize=\small]{haskell}
+
+data MockFileSystem =
+  MockFileSystem (Map FilePath String)
+instance MonadFileSystem (State MockFileSystem) where
+  readFile = _
+  writeFile = _
+\end{minted}
+\end{visibleenv}
+\end{frame}
+
+\begin{frame}[fragile]{The Problem}
+What is the problem with
+\begin{minted}[fontsize=\small]{haskell}
+copyFile :: MonadFileSystem m =>
+            FilePath -> FilePath -> m ()
+copyFile = _
+\end{minted}
+\pause
+\vfill
+\begin{center}
+  \alert{\Large Lack of transparency!}
+\end{center}
+\end{frame}
+
+\begin{frame}{The Solution}
+  \large
+  Delay mocking to the compliation stage\\[1.5em]
+  \pause
+  \qquad by replacing the \texttt{IO} module with a mixin.
+\end{frame}
+
+\begin{frame}[fragile]{The Mixin}
+\begin{minted}[fontsize=\small]{haskell}
+data RealWord = RealWord {
+  workDir :: FilePath,
+  files :: Map File Text,
+  handles :: Map Handle HandleData,
+  user :: IO (),
+  ...
+}
+\end{minted}
+\begin{visibleenv}<2->
+\begin{minted}[fontsize=\small]{haskell}
+
+newtype IO a = IO { unwrapIO ::
+  ExceptT IOException (PauseT (State RealWorld)) a }
+\end{minted}
+\end{visibleenv}
+\end{frame}
+
+\begin{frame}[fragile]{The \texttt{Pause} Monad}
+\begin{minted}[fontsize=\small]{haskell}
+class Monad m => MonadPause m where
+  pause :: m ()
+  stepPauseT :: m a -> m (Either (m a) a)
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{An Example Interaction}
+  \begin{columns}[t]
+    \begin{column}{0.5\textwidth}
+\begin{onlyenv}<1>
+\begin{minted}[fontsize=\small, frame=topline, framesep=10pt, label={Student submission}, labelposition=topline, highlightlines={1}]{haskell}
+main = do
+  x <- getLine
+  putStrLn $ "Hi " ++ x
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<2>
+\begin{minted}[fontsize=\small, frame=topline, framesep=10pt, label={Student submission}, labelposition=topline, highlightlines={2}]{haskell}
+main = do
+  x <- getLine
+  putStrLn $ "Hi " ++ x
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<3-5>
+\begin{minted}[fontsize=\small, frame=topline, framesep=10pt, label={Student submission}, labelposition=topline, highlightlines={2}, highlightcolor=lightgray]{haskell}
+main = do
+  x <- getLine
+  putStrLn $ "Hi " ++ x
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<6>
+\begin{minted}[fontsize=\small, frame=topline, framesep=10pt, label={Student submission}, labelposition=topline, highlightlines={2}]{haskell}
+main = do
+  x <- getLine
+  putStrLn $ "Hi " ++ x
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<7>
+\begin{minted}[fontsize=\small, frame=topline, framesep=10pt, label={Student submission}, labelposition=topline, highlightlines={3}]{haskell}
+main = do
+  x <- getLine
+  putStrLn $ "Hi " ++ x
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<8->
+\begin{minted}[fontsize=\small, frame=topline, framesep=10pt, label={Student submission}, labelposition=topline]{haskell}
+main = do
+  x <- getLine
+  putStrLn $ "Hi " ++ x
+\end{minted}
+\end{onlyenv}
+    \end{column}
+%-----------------------------------
+    \begin{column}{0.5\textwidth}
+\begin{onlyenv}<1-2>
+\begin{minted}[fontsize=\small, frame=topline, framesep=10pt, label={Mock user}, labelposition=topline, highlightlines={1},highlightcolor=lightgray]{haskell}
+user s = do
+  hPutStrLn stdin s
+  out <- hGetLine stdout
+  when (out /= _)
+       (fail $ _)
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<3>
+\begin{minted}[fontsize=\small, frame=topline, framesep=10pt, label={Mock user}, labelposition=topline, highlightlines={1}]{haskell}
+user s = do
+  hPutStrLn stdin s
+  out <- hGetLine stdout
+  when (out /= _)
+       (fail $ _)
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<4>
+\begin{minted}[fontsize=\small, frame=topline, framesep=10pt, label={Mock user}, labelposition=topline, highlightlines={2}]{haskell}
+user s = do
+  hPutStrLn stdin s
+  out <- hGetLine stdout
+  when (out /= _)
+       (fail $ _)
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<5>
+\begin{minted}[fontsize=\small, frame=topline, framesep=10pt, label={Mock user}, labelposition=topline, highlightlines={3}]{haskell}
+user s = do
+  hPutStrLn stdin s
+  out <- hGetLine stdout
+  when (out /= _)
+       (fail $ _)
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<6-7>
+\begin{minted}[fontsize=\small, frame=topline, framesep=10pt, label={Mock user}, labelposition=topline, highlightlines={3}, highlightcolor=lightgray]{haskell}
+user s = do
+  hPutStrLn stdin s
+  out <- hGetLine stdout
+  when (out /= _)
+       (fail $ _)
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<8>
+\begin{minted}[fontsize=\small, frame=topline, framesep=10pt, label={Mock user}, labelposition=topline, highlightlines={3}]{haskell}
+user s = do
+  hPutStrLn stdin s
+  out <- hGetLine stdout
+  when (out /= _)
+       (fail $ _)
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<9>
+\begin{minted}[fontsize=\small, frame=topline, framesep=10pt, label={Mock user}, labelposition=topline, highlightlines={4,5}]{haskell}
+user s = do
+  hPutStrLn stdin s
+  out <- hGetLine stdout
+  when (out /= _)
+       (fail $ _)
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<10>
+\begin{minted}[fontsize=\small, frame=topline, framesep=10pt, label={Mock user}, labelposition=topline]{haskell}
+user s = do
+  hPutStrLn stdin s
+  out <- hGetLine stdout
+  when (out /= _)
+       (fail $ _)
+\end{minted}
+\end{onlyenv}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%------------------------------------------------
+% \section{Check Your Proof}
+
+% \begin{frame}{CYP In A Nutshell}
+
+% \begin{itemize}[<+->]
+  % \item Operates on a strict, untyped subset of Haskell
+  % \item Automatically checks simple inductive proofs
+  % % \item Provides instant feedback
+  % \item Integrates with Tasty
+% \end{itemize}
+% \end{frame}
+
+% \begin{frame}[fragile]{Background Theory}
+% \lstset{language=CYP}
+  % \begin{lstlisting}
+% data List a = [] | a : List a
+
+% [] ++ ys = ys
+% (x : xs) ++ ys = x : (xs ++ ys)
+
+% goal xs ++ (ys ++ zs) .=. (xs ++ ys) ++ zs
+  % \end{lstlisting}
+% \end{frame}
+
+% \begin{frame}[fragile]{The \texttt{[]} Case}
+  % \begin{lstlisting}
+% Lemma: xs ++ (ys ++ zs) .=. (xs ++ ys) ++ zs
+% Proof by induction on List xs
+  % Case []
+    % To show: [] ++ (ys ++ zs) .=. ([] ++ ys) ++ zs
+    % Proof
+                      % [] ++ (ys ++ zs)
+      % (by def ++) .=. ys ++ zs
+      % (by def ++) .=. ([] ++ ys) ++ zs
+    % QED
+  % \end{lstlisting}
+% \end{frame}
+
+% \begin{frame}[fragile]{The \texttt{Cons} Case}
+  % \begin{lstlisting}
+  % Case x : xs
+    % To show: (x : xs) ++ (ys ++ zs)
+         % .=. ((x : xs) ++ ys) ++ zs
+    % IH: xs ++ (ys ++ zs) .=. (xs ++ ys) ++ zs
+    % Proof
+                        % (x : xs) ++ (ys ++ zs)
+      % (by def ++)   .=. x : (xs ++ (ys ++ zs))
+      % (by IH)       .=. x : ((xs ++ ys) ++ zs)
+
+                        % ((x : xs) ++ ys) ++ zs
+      % (by def ++)   .=. (x : (xs ++ ys)) ++ zs
+      % (by def ++)   .=. x : ((xs ++ ys) ++ zs)
+    % QED
+% QED
+  % \end{lstlisting}
+% \end{frame}
+
+% \begin{frame}{Our Experience With CYP}
+% \begin{itemize}[<+->]
+  % \item Student feedback 18 positive, 3 negative
+  % \item Main criticism: lack of documentation
+  % \item Mostly well-structured inductive proofs in the exam
+% \end{itemize}
+% \end{frame}
+
+\begin{frame}
+\centerline{\alert{\huge{Find more in our repository!}}}
+\begin{itemize}
+% \item I/O mocking framework
+\item Games, music synthesiser, turtle graphics,\dots
+\item Proof checker for inductive and equational reasoning
+\item More engagement mechanisms and insights, our technical setup,\dots
+\end{itemize}
+
+\vspace{\baselineskip}
+\centerline{\small\url{github.com/kappelmann/engaging-large-scale-functional-programming}}
+\end{frame}
+
+%------------------------------------------------
+% \section{Future Work}
+
+% \begin{frame}{Future Work}
+% \centerline{Preventing collaboration/cheating}
+% \begin{figure}
+% \includegraphics[height=0.75\textheight]{assets/group}
+% \end{figure}
+% \end{frame}
+
+%------------------------------------------------
+{\usebackgroundtemplate{\backgroundimage}
+\begin{frame}
+\begin{center}
+\Huge{\textbf{\alert{Any questions?}}}
+
+\vfill
+\small{
+Thanks to Tobias Nipkow, Manuel Eberl, our student assistants,
+our industry partners (Active Group, QAware, TNG Technology Consulting, and Well-Typed),
+and\\ our 2000 Haskell students}
+\end{center}
+\end{frame}}
+%----------------------------------------------------------------------------------------
+%\begin{frame}[allowframebreaks]{References}
+  %\bibliography{../paper/sources.bib}
+  %\bibliographystyle{abbrv}
+%\end{frame}
+
+% \begin{frame}[allowframebreaks]{Image Sources}
+% \begin{itemize}
+% \end{itemize}
+% \end{frame}
+
+\end{document}

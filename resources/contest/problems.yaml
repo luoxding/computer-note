@@ -1,0 +1,53 @@
+problems: 
+  contest_teams:
+    path: "/some/path/teaching_fpv/resources/contest/example_data/01/uploads"
+    testhalf: 
+      - "Total"
+    testfull: 
+      - "Total"
+
+  startup_revenue:
+    path: "/some/path/teaching_fpv/resources/contest/example_data/02/uploads"
+    testhalf: 
+      - "Partial"
+    testfull: 
+      - "Total"
+
+  prime_mayor:
+    path: "/some/path/teaching_fpv/resources/contest/example_data/03/uploads"
+    testhalf:
+      - "Test Small Input"
+    testfull:
+      - "Test Big Input"
+
+  help_rudolf:
+    path: "/some/path/teaching_fpv/resources/contest/example_data/04/uploads"
+    testhalf: 
+      - "Empty string"
+      - "One char"
+      - "Only R"
+      - "Partial 1"
+      - "Partial 2"
+    testfull: 
+      - "Total"
+
+  incredible_game:
+    path: "/some/path/teaching_fpv/resources/contest/example_data/05/uploads"
+    testhalf:
+      - "Test Small Input"
+    testfull:
+      - "Test Big Input"
+  
+  terrible_poetry:
+    path: "/some/path/teaching_fpv/resources/contest/example_data/06/uploads"
+    testhalf:
+      - "Test Small Input"
+    testfull:
+      - "Test Large Input" 
+
+  networking:
+    path: "/some/path/teaching_fpv/resources/contest/example_data/07/uploads"
+    testhalf:
+      - "Smol"
+    testfull:
+      - "Beeg" 

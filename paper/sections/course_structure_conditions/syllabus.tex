@@ -1,0 +1,42 @@
+\subsection{Syllabus\label{sec:syllabus}}
+
+The course deals with the basics of functional programming and the verification of functional programs.
+Most parts of the course could be done using any functional language.
+We chose Haskell because of its simple syntax, large user community, and good testing facilities (in particular QuickCheck).
+The syllabus stayed close to the one presented in~\cite{next_1100}.
+The changes are the omission of the parser case study, the rigorous introduction of computation induction and type inference, and the decision to split off I/O from monads and introduce it earlier.
+The last is done in an effort to convince
+students more quickly that pure functional languages can be practical and deal with side effects.
+For ease of reference, we list the syllabus below.
+New or modified topics are marked ($\ast$):
+
+\begin{multicols}{2}
+\begin{enumerate}
+  \item Introduction to functional programming
+  \item Basic Haskell: \mintinline{Haskell}{Bool}, QuickCheck, \mintinline{Haskell}{Integer} and \mintinline{Haskell}{Int}, guarded equations, recursion on numbers \mintinline{Haskell}{Char}, \mintinline{Haskell}{String}, tuples
+  \item List comprehension, polymorphism, a glimpse of the Prelude, basic typeclasses (\mintinline{Haskell}{Num}, \mintinline{Haskell}{Eq}, \mintinline{Haskell}{Ord}), pattern matching, recursion on lists (including accumulating parameters), scoping by example
+  \item Proof by structural induction and computation induction on lists ($\ast$)
+  \item Type inference algorithm ($\ast$)
+  \item Higher-order functions: \mintinline{Haskell}{map},~\mintinline{Haskell}{filter},~\mintinline{Haskell}{foldr}, $\lambda$-abstractions, extensionality, currying
+  \item Typeclasses
+  \item Algebraic datatypes and structural induction
+  \item Concrete I/O without introducing monads ($\ast$)
+  \item Modules: module syntax, data abstraction, correctness proofs
+  \item Case studies: Huffman codings, skew heaps
+  \item Lazy evaluation and infinite lists
+  \item Complexity and optimisation
+  \item Monads ($\ast$)
+\end{enumerate}
+\end{multicols}
+
+Concepts are introduced in small, self-contained steps.
+Characteristic features of functional programming languages such as
+higher-order functions and algebraic data types are
+only introduced midway through the course.
+This makes the design of interesting practical tasks harder
+but ensures that students are not overwhelmed by the diversity
+of new principles that are not part of introductory imperative programming courses.
+In general, the course progresses from ideas close to what is known from imperative languages (e.g.\ boolean conditions, recursion on numbers, auxiliary functions, etc.)
+to simple applications of new concepts (e.g.\ recursion and induction on lists)
+to generalised new concepts (e.g.\ algebraic data types and structural induction).
+

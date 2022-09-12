@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Programming Contest</title>
+  <link rel="icon" type="image/x-icon" href="static/favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta id="n_probs" data-n={{ n_probs }} >
+
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="static/styles.css">
+</head>
+<body class="w3-black">
+
+<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center" id="p_sidebar">
+  <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <i><img src="static/logo.png" style="width:100%" alt="logo"></i>
+    <p>CONTEST</p>
+  </a>
+  <a href="#scoreboard" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <p>SCORES</p>
+  </a>
+  {% for id in range(n_probs) %}
+    <a href="#problem{{ id }}" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+      <p>PROBLEM {{ id }}</p>
+    </a>
+  {% endfor %}
+</nav>
+
+<div class="w3-top w3-hide-large w3-hide-medium" id="p_navbar">
+  <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+    <a href="#" class="w3-bar-item w3-button">CONTEST</a>
+    <a href="#scoreboard" class="w3-bar-item w3-button">SCORES</a>
+    {% for id in range(n_probs) %}
+      <a href="#problem{{ id }}" class="w3-bar-item w3-button">PROBLEM {{ id }}</a>
+    {% endfor %}
+
+  </div>
+</div>
+
+
+<div class="w3-padding-large" id="main">
+
+  <header class="w3-container w3-padding-16 w3-center w3-black" id="home">
+    <img src="static/logo.png" alt="boy" class="w3-image" width="240" height="270">
+    <h1>Programming Contest</h1>
+    <h2 id="basic-rules">Basic Rules</h2>
+    <ul>
+      <li>You must compete in teams of 2&ndash;3 students.</li>
+      <li>Sharing your results with other competitors leads to disqualification.</li>
+    </ul>
+    <h2>Scoring</h2>
+    <p>The contest consists of {{ n_probs }} problems. Each problem is graded as follows:</p>
+    <ul>
+      <li><b class="color-fail">Fail</b> if your submission passes the correctness tests.</li>
+      <li><b class="color-correct">Correct</b> if your submission passes the correctness tests but fails the runtime tests.</li>
+      <li><b class="color-pass">Pass</b> if your submission passes the correctness and runtime tests.</li>
+    </ul>
+    <p>Your job is to pass as many problems as quickly as you can!</br>
+    The team with the most passes wins the contest.</p>
+    <p>If there is a tie, we consider correct but inefficient solutions next.</br>
+    If this is still a tie, we take the team with the lower latest timestamp.</br>
+    If then we still have a tie, we call it a tie! :)</p>
+  </header>
+
+  <div>
+    <button class="w3-circle w3-button w3-dark-gray w3-right" onclick="loadScoreBoard()">
+      <i class="fa fa-refresh w3-xxlarge"></i>
+    </button>
+    <div id="scoreboard-div">
+      {% include 'scoreboard.html' %}
+    </div>
+  </div>
+
+  <h1>Problems</h1>
+  <p>Below you can find the list of problems. Enjoy and good luck! ⚔</p>
+  <!-- include problem htmls -->
+  {% for id in range(n_probs) %}
+    <hr>
+    <div id="problem{{ id }}">
+      {% include 'problem' + id|string + '.html' %}
+    </div>
+  {% endfor %}
+  <footer class="w3-content w3-text-grey w3-xlarge">
+    <p class="w3-medium">Contest framework powered by
+      <a href="https://github.com/kappelmann/engaging-large-scale-functional-programming" target="_blank" class="w3-hover-text-green">TUM Chair for Logic and Verification</a>
+    </p>
+  </footer>
+</div>
+
+</body>
+
+<script>
+  const HttpClient = function () {
+    this.get = function (aUrl, aCallback) {
+      const anHttpRequest = new XMLHttpRequest();
+      anHttpRequest.onreadystatechange = function () {
+        if (anHttpRequest.readyState === 4 && anHttpRequest.status === 200)
+          aCallback(anHttpRequest.responseText);
+      }
+      anHttpRequest.open("GET", aUrl, true);
+      anHttpRequest.send(null);
+    }
+  };
+
+  function loadScoreBoard() {
+    const url = window.location.href.split("#")[0] + "/scoreboard";
+    new HttpClient().get(url, function (response) {
+      document.getElementById("scoreboard-div").innerHTML = response;
+    });
+  }
+</script>
+<!-- load mathjax -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</html>

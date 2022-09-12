@@ -1,0 +1,95 @@
+\section{Introduction}\label{sec:intro}
+
+This paper reports on strategies and tools employed to
+run two iterations of a large-scale functional programming and verification course at the Technical University of Munich (TUM).
+While the first iteration (winter semester 2019, 1057 participants)
+took place on campus,
+the second iteration (winter semester 2020, 1031 participants) was affected by the COVID-19 pandemic and took place in virtual space.
+Previous iterations of the course were introduced in~\cite{next_1100};
+however, we were facing two novel challenges:
+
+\paragraph{Soaring Enrolments}
+The relatively young field of computer science has
+become one of the largest study programmes around the globe.
+The increase of student enrolments is dramatic
+\cite{comp_sci_growth1,comp_sci_growth2}
+while employment of new teaching staff often lags behind.
+At TUM, the number of new enrolments in computer science more than doubled between 2013 and 2021 from 1110 to 2644 (an increase of 138\%)
+while academic staff only increased from 439 to 573 (31\%) \cite{tum_numbers}.
+
+This drastic increase not only requires more physical resources -- like larger lecture halls and more library spaces --
+but also academic staff for supervision.
+Given the discrepancy in growth between student enrolments and staff employment,
+automation of supervision and feedback mechanisms is inevitable.
+Automation, however, should not
+negatively affect the quality of the teaching.
+
+\paragraph{Online Teaching}
+The ongoing COVID-19 pandemic forced a radical
+transition from on-site teaching to online classes.
+Lecturers had to rethink the way they present material and interact with students,
+teaching assistants the way they assist students in tutorial sessions.
+Students, on the other hand, suffer from a lack of social interaction and communication, leading to higher
+levels of stress, anxiety, loneliness, symptoms of depression, and diminished affective engagement~\cite{students_lockdown1,onlineengagement1}.
+
+In our experience, the disconnect between students and lecturers as well as the lack of on campus interaction between students may also lead to \emph{cramming}:
+the practice of showing little participation during the semester
+while studying extensively just before the exam.
+Cramming tends to result in poor long-term retention and shallow understanding of material.
+Indeed, the benefit of spacing learning events apart rather than cramming has been demonstrated in hundreds of experiments \cite{cramming1,cramming2}.
+
+\vspace{0.5\baselineskip}\noindent
+Besides these general challenges,
+there is a third -- subject-specific --
+challenge we were keen to tackle:
+
+\paragraph{Functional Programming is Practical}
+Feedback by students and personal experience has shown us that many students
+at TUM question the applicability and usefulness
+of functional languages beyond academia.
+They are disappointed by a lack of industrial insight
+and real world -- or at least interactive -- applications.
+Indeed, some even perceive functional programming as an obstacle;
+after all, they already know how to program imperatively.
+
+Good educators do not just teach but inspire:
+we have to bring the benefits of functional languages
+closer to our students' hearts
+by showing real-world applicability and making functional programming fun and engaging.
+
+\paragraph{Contributions}
+
+In this paper,
+we present our answers to these challenges
+and provide tools and exercises for other educators.
+Our contributions are
+\begin{enumerate*}[label=\arabic*)]
+  \item a description of technical tools that enable large-scale (functional) programming courses in physical and virtual space,
+  \item a toolbox of engagement mechanisms
+for programming courses
+and an evaluation thereof, and
+  \item reusable exercises and tools for other functional programming educators.
+\end{enumerate*}
+Our resources can be found in the central repository of this paper.\footnote{\url{https://github.com/kappelmann/engaging-large-scale-functional-programming/}}
+
+\paragraph{Outline}
+
+We begin by describing the underlying conditions of our course and its syllabus in \cref{sec:course_structure_conditions}.
+The tools and teaching methods employed during lectures are explained in \cref{sec:lectures}.
+\cref{sec:practical_part} describes the
+mechanisms, tools, and technical setup
+we used to create an engaging experience
+that is scalable
+for the practical part of the course.
+% including tutorials, homework assignments, and
+% competition systems.
+It also includes a framework for I/O
+testing in Haskell
+that solves a transparency issue prevalent in traditional approaches.
+\cref{sec:cyp} introduces
+``Check Your Proof'' -- a tool created
+by our lab to automatically check simple inductive proofs for Haskell programs.
+\cref{sec:exam} describes how we adapted our exams to the COVID-19 situation and large number of participants.
+Finally, \cref{sec:related_work} outlines related work
+and \cref{sec:conclusion} concludes with a summary and aspects to improve.
+
